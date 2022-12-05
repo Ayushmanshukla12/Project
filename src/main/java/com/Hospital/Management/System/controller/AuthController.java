@@ -1,5 +1,7 @@
 package com.Hospital.Management.System.controller;
 
+import com.Hospital.Management.System.dto.ForgotPasswordDto;
+import com.Hospital.Management.System.dto.ResetPasswordDto;
 import com.Hospital.Management.System.entities.DoctorPojo;
 import com.Hospital.Management.System.entities.NursePojo;
 import com.Hospital.Management.System.entities.UserPojo;
@@ -18,6 +20,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
 @RestController
 @RequestMapping("/authenticate")
 public class AuthController {
@@ -34,7 +38,7 @@ String role="";
     @Autowired
     private AuthenticationManager authenticationManager;//this is a inbuilt interface so you cant write @service over it so u will have to make its bean here
 
-
+@CrossOrigin
     @PostMapping ("/login")
     public ResponseEntity<LoginResponseDto> authenticateUser(@RequestBody LoginRequestDto loginDto) {
 
@@ -43,33 +47,9 @@ String role="";
                     UsernamePasswordAuthenticationToken(loginDto.getUserName(), loginDto.getUserPassword()));
 
             SecurityContextHolder.getContext().setAuthentication(authentication);
-
             String token = jwtTokenProvider.generateToken(authentication).trim();
-
-            String  userName= loginDto.getUserName().trim();
-
-
-            if(userName.equals("admin14@gmail.com")){
-                id = 1;
-                role="Admin-Role";
-            }
-            else {
-                DoctorPojo doctorPojo=doctorPojoRepository.getByDoctorPojoEmail(userName).get();
-                if(doctorPojo!=null)
-                {
-                    id=doctorPojo.getDoctorPojoId();
-                    role="Doctor_Role";
-                }
-                else
-                {
-                    NursePojo nursePojo=nursePojoRepository.getByNursePojoEmail(userName).get();
-                    if(nursePojo!=null){
-                        System.out.println("Is not available");
-                        id=nursePojo.getNursePojoId();
-                        role="Nurse_Role";
-                    }
-                }
-            }
+            int id=jwtTokenProvider.getUserId(jwtTokenProvider.getUsernameFromJWT(token).trim());
+            String role=jwtTokenProvider.getRole(jwtTokenProvider.getUsernameFromJWT(token).trim());
             System.out.println(token);
             return ResponseEntity.ok(new LoginResponseDto(token,id,role));
         }
@@ -79,17 +59,27 @@ String role="";
         }
 
     }
-    @PostMapping("/resetpassword/{userId}")
-    public String resetPassword(@PathVariable int id, @RequestBody UserPojo userPojo){
-        return  null;
+    @CrossOrigin
+    @PostMapping("/resetPassword")
+    public String resetPassword(@RequestBody ResetPasswordDto resetPasswordDto){
+
+        return  this.passwordService.resetPassword(resetPasswordDto) ;
     }
 
 
-    @GetMapping("/forgotpassword/{userName}")
-    public String forgotPassword(@PathVariable String userName){
-        passwordService.forgetPassword(userName);
-        return "mail sent succesfully";
-    }
+//    @GetMapping("/forgotpassword/{userName}")
+//    public String forgotPassword(@PathVariable String userName){
+//        passwordService.forgetPassword(userName);
+//        return "mail sent succesfully";
+//    }
 
+    @CrossOrigin
+    @PostMapping("/forgotPassword")
+    public ResponseEntity<HashMap<ForgotPasswordDto, String>> forgetPassword(@RequestBody ForgotPasswordDto forgetPasswordDto)
+    {
+        return passwordService.forgetPassword(forgetPasswordDto);
+
+
+    }
     }
 

@@ -21,18 +21,14 @@ public class DoctorServiceClassImpl {
     @Autowired
     private RequestDoctorRepository repository;
     public String doctorReplaceRequest(DoctorReplaceDto doctorReplaceDto) {
+
+        int newNurseId=doctorReplaceDto.getNewNurseId();
+        System.out.println(newNurseId);
         DoctorPojo doctorPojo = doctorPojoRepository.getById(doctorReplaceDto.getDoctorId());
         //NursePojo nursePojo = nursePojoRepository.getOne(doctorReplaceDto.getOldNurseId());
         NursePojo nursePojo1 = nursePojoRepository.getById(doctorReplaceDto.getNewNurseId());
-        if (nursePojo1.getNursePojoStatus().equals("unallocated") ) {
-//            doctorPojo.getNursePojos().remove(nursePojo);
-//            List<NursePojo> nursePojos = doctorPojo.getNursePojos();
-//            nursePojos.add(nursePojo1);
-//            doctorPojo.setNursePojos(nursePojos);
-//            doctorPojoRepository.save(doctorPojo);
-//            nursePojo1.setNursePojoStatus("allocated");
-//            nursePojoRepository.save(nursePojo);
 
+        if (!nursePojo1.isNursePojoStatus() && !nursePojo1.isNursePojoIsDeleted()) {
             System.out.println("++++++++++++");
             RequestDoctor requestDoctor = new RequestDoctor();
             requestDoctor.setRequestDoctorId(doctorReplaceDto.getDoctorId());
@@ -40,7 +36,6 @@ public class DoctorServiceClassImpl {
             requestDoctor.setNewNurseId(doctorReplaceDto.getNewNurseId());
             requestDoctor.setOldNurseId(doctorReplaceDto.getOldNurseId());
             requestDoctor.setRequestDoctorStatus("pending");
-
             repository.save(requestDoctor);
 
             return "nurse replace request created ";

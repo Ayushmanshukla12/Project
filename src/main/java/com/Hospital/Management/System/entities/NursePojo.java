@@ -23,7 +23,7 @@ public class NursePojo {
     private String nursePojoName;
     private String nursePojoEmail;
     private String nursePojoPassword;
-    private String nursePojoStatus;
+    private boolean nursePojoStatus;
     private boolean nursePojoIsDeleted;
 @ManyToOne
 @JsonBackReference

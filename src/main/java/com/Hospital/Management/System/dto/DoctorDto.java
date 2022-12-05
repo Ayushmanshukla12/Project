@@ -1,8 +1,11 @@
 package com.Hospital.Management.System.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+
 public class DoctorDto {
 
 

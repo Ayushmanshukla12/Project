@@ -12,7 +12,7 @@ public class NurseDto {
     private int nurseNumberOfYears;
     private String userEmail;
     private String nurseName;
-    private String isAllocated;
+    private boolean isAllocated;
     private boolean isDeleted;
 
 }

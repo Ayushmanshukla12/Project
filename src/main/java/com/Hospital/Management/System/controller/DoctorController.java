@@ -19,6 +19,9 @@ public class DoctorController {
         return this.doctorServiceClass.doctorReplaceRequest(doctorReplaceDto);
     }
 
+//    public String showAllRequests(){
+//
+//    }
 }
 
 

@@ -1,5 +1,9 @@
 package com.Hospital.Management.System.security;
 
+import com.Hospital.Management.System.entities.DoctorPojo;
+import com.Hospital.Management.System.entities.NursePojo;
+import com.Hospital.Management.System.entities.RolePojo;
+import com.Hospital.Management.System.entities.UserPojo;
 import com.Hospital.Management.System.exception.BlogApiException;
 import com.Hospital.Management.System.repository.DoctorPojoRepository;
 import com.Hospital.Management.System.repository.NursePojoRepository;
@@ -13,6 +17,8 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.Set;
+
 @Service
 public class JwtTokenProvider {
     @Autowired
@@ -70,6 +76,36 @@ public class JwtTokenProvider {
             throw new BlogApiException(HttpStatus.BAD_REQUEST,"Unsupported JWT token");
         } catch (IllegalArgumentException exception) {
             throw new BlogApiException(HttpStatus.BAD_REQUEST,"JWT claims string is empty");
+        }
+
+    }
+    public String getRole(String username){
+        UserPojo user=userPojoRepository.findByUserName(username).get();
+        Set<RolePojo> roleSet= user.getRolePojos();
+        String role = null;
+        for (RolePojo r :
+                roleSet) {
+            role=r.getRolePojoName();
+            break;
+        }
+        return role;
+    }
+
+
+
+    public int getUserId(String username){
+        String roleOfUser=getRole(username);
+        if(roleOfUser.equals("admin"))
+        {
+            return 1;
+        } else if (roleOfUser.equals("doctor"))
+        {
+            DoctorPojo doctor =doctorPojoRepository.getByDoctorPojoEmail(username).get();
+            return doctor.getDoctorPojoId();
+        }else
+        {
+            NursePojo nurse=nursePojoRepository.getByNursePojoEmail(username).get();
+            return nurse.getNursePojoId();
         }
 
     }

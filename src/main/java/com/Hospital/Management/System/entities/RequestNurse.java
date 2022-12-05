@@ -1,9 +1,8 @@
 package com.Hospital.Management.System.entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -11,6 +10,9 @@ import javax.persistence.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class RequestNurse {
 
     @Id
@@ -18,8 +20,20 @@ public class RequestNurse {
     private int requestNurseId;
     private int oldDoctorId;
     private int newDoctorId;
-    private String requestNurseStatus;
+    private String  requestNurseStatus;
+    private String replaceReason;
     @ManyToOne
     @JsonBackReference
     private NursePojo nursePojo;
+
+    @Override
+    public String toString() {
+        return "RequestNurse{" +
+                "requestNurseId=" + requestNurseId +
+                ", oldDoctorId=" + oldDoctorId +
+                ", newDoctorId=" + newDoctorId +
+                ", requestNurseStatus='" + requestNurseStatus + '\'' +
+                ", nursePojo=" + nursePojo +
+                '}';
+    }
 }
